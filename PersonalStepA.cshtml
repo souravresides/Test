@@ -1,0 +1,314 @@
+﻿@model PersonalTypeStepAModel
+@inject IService service
+@{
+    ViewBag.Title = ViewBag.FormType + "Claim Form";
+    Layout = "_Layout";
+}
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+    <script src="~/js/form/personalstepa.js"></script>
+</head>
+
+<body>
+    <div class="card">
+        <div class="card-body">
+            <div class="container">
+                <br /><br />
+                <h4 class="text-center mt-4">@ViewBag.FormType Type Claim Form </h4>
+                <div class="formA">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Success"]
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    <br />
+                    <form method="post" enctype="multipart/form-data" onsubmit="return validateDates(event)">
+                        <div class="mb-4">
+                            <small class="text-right d-block">
+                                <a>Step 1</a> / Step 2
+                            </small>
+                        </div>
+                        <h4 style="background: #685c74;color: white;padding: 9px;">Part 1: General Information</h4>
+                        <p><br>Please fill in all you can to help process your claim.<br><br></p>
+                        <div class="form-group text-center">
+                            <p class="text-left"><strong>Full Name (Required)</strong> the name in these boxes should match your government issued ID.</p>
+                            <div class="row text-center">
+                                <div class="col">
+                                    <input type="text" asp-for="Id" hidden />
+                                    <input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" asp-for="FirstName" id="firstname">
+                                    <input asp-for="IsFormFillingStarted" hidden>
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                    <label style="margin-right: 70px;margin-left: 70px;">First</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="middleNameInput" asp-for="MiddleName">
+                                    <span asp-validation-for="MiddleName" class="text-danger"></span>
+                                    <label style="margin-right: 70px;margin-left: 70px;">Middle</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="lastname" asp-for="LastName">
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                    <label style="margin-right: 70px;margin-left: 70px;">Last</label>
+                                </div>
+                            </div>
+                            <p class="text-left"><strong>Alternative or preferred name (Optional)</strong> Please include other names you prefer to use. (e.g., alternative spelling, birth name or spirit names)</p>
+                            <div class="row text-center">
+                                <div class="col"><input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" asp-for="AlternativeFirstName" id="altFirstNameInput"><span asp-validation-for="AlternativeFirstName" class="text-danger"></span><label for="altFirstNameInput" style="margin-right: 70px;margin-left: 70px;">First</label></div>
+                                <div class="col"><input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="altMiddleNameInput" asp-for="AlternativeMiddleName"><span asp-validation-for="AlternativeMiddleName" class="text-danger"></span><label for="altMiddleNameInput" style="margin-right: 70px;margin-left: 70px;">Middle</label></div>
+                                <div class="col"><input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="altLastNameInput" asp-for="AlternativeLastName"><span asp-validation-for="AlternativeLastName" class="text-danger"></span><label for="altLastNameInput" style="margin-right: 70px;margin-left: 70px;">Last</label></div>
+                            </div><br />
+                            <p class="text-left">We understand that you might not have all this information, but please fill in at least one of the following.</p>
+                            <div class="row text-left">
+                                <div class="col">
+                                    <label for="dobInput"><strong>Date of Birth</strong></label>
+                                    <input type="date" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="birthdate" asp-for="DateOfBirth"><span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <label for="dodInput"><strong>Date of Death (If Applicable)</strong></label>
+                                    <input type="date" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="deathdate" asp-for="DateOfDeath"><span asp-validation-for="DateOfDeath" class="text-danger"></span>
+                                </div>
+                            </div><br />
+                            <div class="row text-left">
+                                <div class="col">
+                                    <label for="sinInput"><strong>Social Insurance Number (SIN)</strong></label>
+                                    <input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="sinInput" asp-for="SocialInsuranceNumber"><span asp-validation-for="SocialInsuranceNumber" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <label for="statusCardInput"><strong>Indian Status Card Number</strong></label>
+                                    <input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" id="statusCardInput" asp-for="IndianStatusCardNumber"><span asp-validation-for="IndianStatusCardNumber" class="text-danger"></span>
+                                </div>
+                            </div><br />
+                            <div class="row text-left">
+                                <div class="col">
+                                    <label for="membershipInput"><strong>Community / First Nation of Membership</strong></label>
+                                    <input type="text" style="background: #f0ecf4;border-top-style: none;border-right-style: none;border-bottom-color: var(--gray-dark);border-left-style: none;width: inherit; padding:7px;" asp-for="CommunityOrFirstNationOfMembership" id="membershipInput"><span asp-validation-for="CommunityOrFirstNationOfMembership" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row text-left">
+                                <div class="col">
+                                    <label for="membershipInput"><strong>File Upload</strong></label>
+                                    <div class="input-group mb-3">
+                                        @if(Model.FileUpload != null)
+                                        {
+                                            <input type="text" class="form-control" asp-for="FileUpload" placeholder="Recipient's username" readonly aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <button type="button" id="openCameraButton" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-camera" aria-hidden="true"></i></button>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <input type="file" class="form-control" asp-for="FileUpload" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <button type="button" id="openCameraButton" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-camera" aria-hidden="true"></i></button>
+                                            </span>
+                                        }
+                                        
+                                    </div>
+                                    <span asp-validation-for="CommunityOrFirstNationOfMembership" class="text-danger"></span>
+                                    @*<button type="button" id="cameraButton" class="btn btn-primary">Open Camera</button>*@
+                                    
+                                </div>
+                            </div>
+                        </div><br />
+                        <button asp-route-formType="@ViewBag.FormType" type="submit" style="padding:7px;" class="btn btn-primary">Next and Save</button>
+                    </form>
+                    <!--Camera Part-->
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <form id="form" asp-action="UploadImage" asp-controller="Form" method="post" enctype="multipart/form-data">
+                                                    <div id="cameraCard" class="card" style="display: none;">
+                                                        <div class="card-body">
+                                                            <div id="cameraView" class="text-center">
+                                                                <video id="videoElement" autoplay class="img-fluid"></video>
+                                                            </div>
+                                                            <div id="imagePreviewContainer" class="text-center" style="display: none;">
+                                                                <img id="imagePreview" class="img-fluid" />
+                                                            </div>
+                                                            <div class="text-center mt-3">
+                                                                <button id="captureButton" type="button" class="btn btn-primary" style="display: none;">Capture</button>
+                                                                <button id="recaptureButton" type="button" class="btn btn-primary" style="display: none;">Recapture</button>
+                                                                <button id="saveImageButton" type="button" class="btn btn-primary" style="display: none;">Save Image</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Hidden input to store the image data -->
+                                                    <input type="hidden" id="imageData" name="imageData" />
+                                                    
+                                                </form>
+                                            </div>
+                                           @* <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                            </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!--Till here-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="customDialog" class="dialog">
+        <div class="dialog-content">
+            <h5 id="dialog-Header">Warning</h5><hr />
+            <p id="dialogMessage"></p>
+            <button class="btn btn-sm btn-primary" onclick="closeDialog()">OK</button>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+<script>
+    var videoElement = document.getElementById("videoElement");
+    var openCameraButton = document.getElementById("openCameraButton");
+    var captureButton = document.getElementById("captureButton");
+    var recaptureButton = document.getElementById("recaptureButton");
+    var saveImageButton = document.getElementById("saveImageButton");
+    var imagePreview = document.getElementById("imagePreview");
+    var cameraCard = document.getElementById("cameraCard");
+    var cameraView = document.getElementById("cameraView");
+    var imagePreviewContainer = document.getElementById("imagePreviewContainer");
+    var stream; // To keep track of the camera stream
+
+    // Function to start the camera stream
+    function startCameraStream() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (streamObj) {
+                stream = streamObj;
+                videoElement.srcObject = stream;
+                cameraCard.style.display = "block"; // Show the camera card
+                saveImageButton.style.display = "none";
+            })
+            .catch(function (error) {
+                console.error("Error accessing camera:", error);
+            });
+    }
+
+    // Function to stop the camera stream
+    function stopCameraStream() {
+        if (stream && stream.getTracks) {
+            stream.getTracks().forEach(function (track) {
+                track.stop();
+            });
+        }
+    }
+
+    // Function to set the image data in the hidden input
+    function setImageData(imageUrl) {
+        var imageDataInput = document.getElementById("imageData");
+        imageDataInput.value = imageUrl;
+    }
+
+    // Open Camera button click event handler
+    openCameraButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Show the video stream and buttons
+        //document.getElementById("exampleModalCenter").style.display = "block";
+        captureButton.style.display = "block";
+        openCameraButton.style.display = "none";
+
+        // Start the camera stream
+        startCameraStream();
+    });
+
+    // Capture button click event handler
+    captureButton.addEventListener("click", function () {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var videoWidth = videoElement.videoWidth;
+        var videoHeight = videoElement.videoHeight;
+
+        canvas.width = videoWidth;
+        canvas.height = videoHeight;
+        context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+
+        var imageUrl = canvas.toDataURL("image/png"); // Convert captured image to base64 data URL
+
+        // Update the image preview
+        imagePreview.src = imageUrl;
+        imagePreview.style.display = "block";
+        imagePreviewContainer.style.display = "block";
+
+        // Show the "Ok" button to save the image
+        saveImageButton.style.display = "block";
+
+        // Hide the video stream and buttons
+        videoElement.style.display = "none";
+        captureButton.style.display = "none";
+        recaptureButton.style.display = "block";
+
+        // Stop the camera stream
+        stopCameraStream();
+    });
+
+    // Recapture button click event handler
+    recaptureButton.addEventListener("click", function () {
+        // Show the video stream and buttons
+        videoElement.style.display = "block";
+        captureButton.style.display = "block";
+        recaptureButton.style.display = "none";
+        imagePreview.style.display = "none";
+        imagePreviewContainer.style.display = "none";
+
+        // Start the camera stream again
+        startCameraStream();
+    });
+
+    // Function to save the image to a specified location
+    function saveImage(imageUrl, name) {
+        // Create a dummy anchor element to trigger the download
+        var link = document.createElement("a");
+        link.href = imageUrl;
+        link.download = name + ".png";
+        link.click();
+    }
+
+    // Ok button click event handler
+    saveImageButton.addEventListener("click", function () {
+        var imageUrl = imagePreview.src;
+
+        // Set the image data in the hidden input
+        setImageData(imageUrl);
+
+        // Submit the form to upload the image to the server
+        document.getElementById("form").submit();
+    });
+</script>
+
+<script>
+    //Google Maps API
+    var searchInput = 'search_input';
+
+    $(document).ready(function () {
+        var autocomplete;
+        autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput)), {
+            types: ['establishment'],
+
+            /*componentRestrictions: {
+             country: "USA"
+            }*/
+        });
+
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var near_place = autocomplete.getPlace();
+        });
+    });
+</script>
