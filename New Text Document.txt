@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js"></script>
+    <!--Flot -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+    <style>
+        .fa-folder-open {
+            font-size: 50px;
+            padding: 10px;
+            color: red;
+            margin-top: 15px;
+        }
+
+        .fa-plus {
+            font-size: 28px;
+            padding: 10px;
+            color: green;
+            margin-top: 15px;
+        }
+
+        .fa-equals {
+            font-size: 28px;
+            padding: 10px;
+            color: green;
+            margin-top: 15px;
+        }
+
+        .fa-database {
+            font-size: 50px;
+            padding: 10px;
+            /* color: red; */
+            margin-top: 15px;
+        }
+    </style>
+    <style>
+        #chartdiv{
+          width: 100%;
+          height: 380px;
+        }
+        #chartdiv2{
+            width: 100%;
+          height: 300px;
+        }
+        #barchartdiv {
+          width: 100%;
+          height: 500px;
+        }
+    </style> 
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    <script>
+        am4core.ready(function() {
+        
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+        
+        var chart = am4core.create("chartdiv", am4charts.PieChart3D);
+        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+        
+        chart.legend = new am4charts.Legend();
+        
+        chart.data = [
+          {
+            country: "Active review workspace",
+            litres: 4000,
+            color: am4core.color("#E3E48D")
+          },
+          {
+            country: "Warm storage/repository workspace",
+            litres: 2500,
+            color: am4core.color("#009A44")
+          },
+          {
+            country: "Cold storage",
+            litres: 1500,
+            color: am4core.color("#9DD4CF")
+          },
+          {
+            country: "Staging/archive stores",
+            litres: 2000,
+            color: am4core.color("#007680")
+          }
+        ];
+        
+        var series = chart.series.push(new am4charts.PieSeries3D());
+        series.dataFields.value = "litres";
+        series.dataFields.category = "country";
+        series.slices.template.propertyFields.fill = "color"; 
+        // Show only the percentage in the label
+        series.labels.template.text = "{value}";
+        series.labels.template.truncate = false;
+        series.labels.template.hideOversized = true;
+        
+        }); // end am4core.ready()
+    </script>
+     <script>
+        am4core.ready(function() {
+        
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+        
+        var chart = am4core.create("chartdiv2", am4charts.PieChart3D);
+        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+        
+        chart.legend = new am4charts.Legend();
+        
+        chart.data = [
+          {
+            country: "Used Space",
+            litres: 5000,
+            color: am4core.color("#046A38")
+          },
+          {
+            country: "Free Space",
+            litres: 10000,
+            color: am4core.color("#0097A9")
+          }
+        ];
+        
+        var series = chart.series.push(new am4charts.PieSeries3D());
+        series.dataFields.value = "litres";
+        series.dataFields.category = "country";
+        series.slices.template.propertyFields.fill = "color"; 
+        // Show only the percentage in the label
+        series.labels.template.text = "{value}";
+        series.labels.template.truncate = false;
+        series.labels.template.hideOversized = true;
+        
+        }); // end am4core.ready()
+    </script>
+       <script>
+        am4core.ready(function() {
+        
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+        
+        // Create chart instance
+        var chart = am4core.create("barchartdiv", am4charts.XYChart3D);
+        
+        // Add data
+        chart.data = [{
+          "year": "Active workspace" ,
+          "income": 80,
+          color: am4core.color("#007680")
+        }, {
+          "year": "Warm storage ",
+          "income": 35,
+          color: am4core.color("#62B5E5")
+        }, {
+          "year": "Cold storage",
+          "income": 20,
+          color: am4core.color("#00A3E0")
+        }, {
+          "year": "Staging stores ",
+          "income": 15,
+          color: am4core.color("#004F59")
+        }];
+        
+        // Create axes
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis()); // Change to x-axis
+        categoryAxis.dataFields.category = "year";
+        categoryAxis.title.text = "Types of Storage Consumption"; // Add x-axis title
+        categoryAxis.numberFormatter.numberFormat = "#";
+        
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis()); // Change to y-axis
+        valueAxis.title.text = "Data Volume Consumption (In GB)"; // Add y-axis title
+        
+        // Create series
+        var series = chart.series.push(new am4charts.ColumnSeries3D());
+        series.dataFields.valueY = "income"; // Change to valueY
+        series.dataFields.categoryX = "year"; // Change to categoryX
+        series.name = "Income";
+        series.columns.template.propertyFields.fill = "color";
+        series.columns.template.tooltipText = "{valueY}"; // Change to valueY
+        series.columns.template.column3D.stroke = am4core.color("#fff");
+        series.columns.template.column3D.strokeOpacity = 0.2;
+        
+        }); // end am4core.ready()
+        </script>
+</head>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark fixed-top">
+        <a class="navbar-brand text-white" style="letter-spacing: 2px ;">
+            <img src="relone logo.png" style="width:auto; height:25px">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <!-- <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li> -->
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <img src="logo.png" style="width:auto; height:55px">
+            </form>
+        </div>
+    </nav>
+</header>
+
+<body>
+    <div class="container" style="margin-top:7%; margin-bottom: 5%;">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3"></div>
+                                        <div class="form-group col-md-6">
+                                            <label for="inputState">Select Client</label>
+                                            <select id="inputState" class="form-control">
+                                                <option selected>Select...</option>
+                                                <option>...</option>
+                                            </select>
+                                            <small>Select Client from the dropdown</small>
+                                        </div>
+                                        <div class="form-group col-md-3"></div>
+                                    </div>
+                                </form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p class="text-center"><strong>Total Workspace</strong></p>
+                                                <h6 class="text-center">150</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p class="text-center"><strong>Active Users</strong></p>
+                                                <h6 class="text-center">42</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p class="text-center"><strong>Inactive Users</strong></p>
+                                                <h6 class="text-center">17</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h6 class="text-center">Workspace Breakdown</h6>
+                                <div id="barchartdiv"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="text-center">Data Volume Consumption (in GB)</h6>
+                        <div id="chartdiv"></div>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6 class="text-center">Data Volume Consumption (in GB)</h6>
+                        <div id="chartdiv2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+</body>
+<footer>
+    <div class="bg-dark p-2">
+        <h6 class="text-white mt-2">
+            <marquee> Deloitte - Global 27th July 2023</marquee>
+        </h6>
+    </div>
+</footer>
+
+</html>
