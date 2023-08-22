@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="cameraView" class="text-center" style="display: none;">
+                            <video id="videoElement" autoplay class="img-fluid"></video>
+                        </div>
+                        <div id="imagePreviewContainer" class="text-center" style="display: none;">
+                            <img id="imagePreview" class="img-fluid" />
+                        </div>
+                        <div class="text-center mt-3">
+                            <button id="captureButton" class="btn btn-primary" style="display: none;">Capture</button>
+                            <button id="recaptureButton" class="btn btn-primary" style="display: none;">Recapture</button>
+                            <button id="cropAndSaveButton" class="btn btn-primary" style="display: none;">Crop and Save</button>
+                            <button id="cameraButton" class="btn btn-primary">Open Camera</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS (optional, only needed if you have other Bootstrap components that rely on JS) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Add Cropper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <script>
+        var videoElement = document.getElementById("videoElement");
+        var cameraButton = document.getElementById("cameraButton");
+        var captureButton = document.getElementById("captureButton");
+        var recaptureButton = document.getElementById("recaptureButton");
+        var cropAndSaveButton = document.getElementById("cropAndSaveButton");
+        var imagePreview = document.getElementById("imagePreview");
+        var cameraView = document.getElementById("cameraView");
+        var imagePreviewContainer = document.getElementById("imagePreviewContainer");
+        var stream; // To keep track of the camera stream
+        var cropper; // To keep track of the cropper instance
+
+        // Function to start the camera stream
+        function startCameraStream() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (streamObj) {
+                    stream = streamObj;
+                    videoElement.srcObject = stream;
+                    cameraView.style.display = "block"; // Show the camera view
+                })
+                .catch(function (error) {
+                    console.error("Error accessing camera:", error);
+                });
+        }
+
+        // Function to stop the camera stream
+        function stopCameraStream() {
+            if (stream && stream.getTracks) {
+                stream.getTracks().forEach(function (track) {
+                    track.stop();
+                });
+            }
+            cameraView.style.display = "none"; // Hide the camera view
+        }
+
+        // Function to start the cropper on the captured image
+        function startCropper(imageUrl) {
+            imagePreview.src = imageUrl;
+            imagePreview.style.display = "block";
+            imagePreviewContainer.style.display = "block";
+
+            // Initialize the cropper
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: 1, // Set the aspect ratio as needed
+                viewMode: 2,    // Enable cropping within the preview container
+            });
+
+            // Show the "Crop and Save" button
+            cropAndSaveButton.style.display = "block";
+        }
+
+        // Camera button click event handler
+        cameraButton.addEventListener("click", function () {
+            // Show the video stream and buttons
+            captureButton.style.display = "block";
+            cameraButton.style.display = "none";
+
+            // Start the camera stream
+            startCameraStream();
+        });
+
+        // Capture button click event handler
+        captureButton.addEventListener("click", function () {
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+            var videoWidth = videoElement.videoWidth;
+            var videoHeight = videoElement.videoHeight;
+
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+            context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+
+            var imageUrl = canvas.toDataURL("image/png"); // Convert captured image to base64 data URL
+
+            // Start the cropper on the captured image
+            startCropper(imageUrl);
+
+            // Hide the video stream and buttons
+            videoElement.style.display = "none";
+            captureButton.style.display = "none";
+            recaptureButton.style.display = "block";
+
+            // Stop the camera stream
+            stopCameraStream();
+        });
+
+        // Recapture button click event handler
+        recaptureButton.addEventListener("click", function () {
+            // Show the video stream and buttons
+            videoElement.style.display = "block";
+            captureButton.style.display = "block";
+            recaptureButton.style.display = "none";
+            imagePreview.style.display = "none";
+            imagePreviewContainer.style.display = "none";
+
+            // Start the camera stream again
+            startCameraStream();
+        });
+
+        // Crop and Save button click event handler
+        cropAndSaveButton.addEventListener("click", function () {
+            // Get the cropped image data URL
+            var croppedImageUrl = cropper.getCroppedCanvas().toDataURL("image/png");
+
+            // Save the cropped image (you can adjust this part to your specific saving mechanism)
+            var croppedImageLink = document.createElement("a");
+            croppedImageLink.href = croppedImageUrl;
+            croppedImageLink.download = "cropped_image.png";
+            croppedImageLink.click();
+        });
+
+    </script>
+</body>
+</html>
